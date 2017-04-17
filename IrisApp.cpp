@@ -20,9 +20,12 @@
 #define AUTHFILENAME_LOC "./.numOfImage/authFileNames.txt"
 #define UPLOAD_LOC "./UPLOAD/"
 #define USERLIST_LOC "./SERVER/userlist/USERS.LIST"
+#define MATCHRESULT_LOC "./.SANDBOX/LASTMATCHRESULT.txt"
 
 #define ENROLLMENT 1
 #define AUTHENTICATION 2
+
+#define MATCHTHRESHOLD 0.29
 
 using namespace std;
 using namespace osiris;
@@ -128,7 +131,7 @@ int main(int argc, char const *argv[]) {
         src2.close();
         dst2.close();
 
-        /*Make a list for Authenticating images*/
+        /*Make a list for Authenticating (SERVER and UPLOAD) images*/
         std::ofstream afnFile(AUTHFILENAME_LOC);
         afnFile << to_string(id)+".jpg  "+to_string(id)+"i.jpg";
         afnFile.close();
@@ -139,94 +142,25 @@ int main(int argc, char const *argv[]) {
         osi2.showConfiguration();
         osi2.run();
 
-        /*
+        /* Read MatchResult */
+        string str;
+        float matchRes = 100;
+        fstream mrFile(MATCHRESULT_LOC, std::ios_base::in); //File for list of users in SERVER
+        while (mrFile >> str) {
+          mrFile >> str;
+          mrFile >> matchRes;
+        }
 
-
-
-
-
-
-
+        /*Check match Value */
+        cout << "\n\nThe match value is:  " << matchRes << endl;
+        cout << "The match threshold value is: " << MATCHTHRESHOLD << endl;
+        if (matchRes < MATCHTHRESHOLD) {
+          cout << "AUTHENTICATION SUCCESSFUL!!!\n\n";
+        } else {
+          cout << "AUTHENTICATION FAILED!!!\n\n";
+        }
 
       }
-
-      //
-      // int a;
-      // string b;
-      //
-      // while (ulFile >> a)
-      // {
-      //     cout << a;
-      //     ulFile >> b;
-      //     // cout << b;
-      // }
-
-
-
-      // std::string::size_type sz;
-      //
-      // switch (choice) {
-      //   case 1:
-      //     cout << "You have chosen to enroll\n";
-      //
-      //     ulfile.open("./SERVER/USERS.LIST", ios::in);
-      //     while (ulfile.good() && !(ulfile.eof())) {
-      //       getline(ulfile, s);
-      //       userid = stoi(s, nullptr, 10);
-      //       cout << userid;
-      //     }
-      //
-      //     break;
-      //   case 2:
-      //     cout << "You have chosen to authenticate\n";
-      //
-      //     ulfile.open("./SERVER/USERS.LIST", ios::in);
-      //
-      //     cout << "Insert your id. Following are the enrolled users.\n";
-      //     while (ulfile.good() && !(ulfile.eof())) {
-      //       getline(ulfile, s);
-      //       cout << s << endl;
-      //     }
-      //
-      //     break;
-      // }
-      //
-      // struct stat st = {0};
-      //
-      // if (stat("./asd", &st) == -1) {
-      //   mkdir("./asd", 0700);
-      // }
-
-
-      /*Read Image file name and put to enrollFileName list*/
-      // DIR *dpdf;
-      // struct dirent *epdf;
-      //
-      // bool imageFound = false;
-      //
-      // dpdf = opendir("./CURRENT");
-      // if (dpdf != NULL){
-      //    while (epdf = readdir(dpdf)){
-      //       if (strlen(epdf->d_name) > 2) {
-      //         ofstream efnFile;
-      //         efnFile.open(ENROLLFILENAME_LOC);
-      //         efnFile << epdf->d_name;
-      //         efnFile.close();
-      //         imageFound = true;
-      //         break;
-      //       }
-      //    }
-      // }
-      //
-      // if (!imageFound) {
-      //   cout << "No Image found for enrollment. Exiting...\n";
-      //   return 0;
-      // }
-      // OsiManager osi;
-      // osi.loadConfiguration(ENROLLMENT_CONFIG) ;
-      // // osi.showConfiguration();
-      // osi.run();
-
   }
   catch ( std::exception & e )
   {
