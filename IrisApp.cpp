@@ -118,23 +118,28 @@ int main(int argc, char const *argv[]) {
 
         /* Copy Original Template to the Sandbox*/
         std::ifstream  src("./SERVER/"+to_string(id)+"_code.bmp", std::ios::binary);
-        std::ofstream  dst("./.SANDBOX/"+to_string(id)+"_code.bmp",   std::ios::binary);
+        std::ofstream  dst("./.SANDBOX/"+to_string(id)+"_code.bmp", std::ios::binary);
         dst << src.rdbuf();
         src.close();
         dst.close();
         std::ifstream src2("./SERVER/"+to_string(id)+"_mano.bmp", std::ios::binary);
-        std::ofstream dst2("./.SANDBOX/"+to_string(id)+"_mano.bmp",   std::ios::binary);
+        std::ofstream dst2("./.SANDBOX/"+to_string(id)+"_mano.bmp", std::ios::binary);
         dst2 << src2.rdbuf();
         src2.close();
         dst2.close();
 
         /*Make a list for Authenticating images*/
         std::ofstream afnFile(AUTHFILENAME_LOC);
-        afnFile << to_string(id)+".jpg\n"+to_string(id)+"i.jpg";
+        afnFile << to_string(id)+".jpg  "+to_string(id)+"i.jpg";
         afnFile.close();
 
-        osi.loadConfiguration(AUTH_CONFIG);
-        osi.run();
+        /* Run Match*/
+        OsiManager osi2;
+        osi2.loadConfiguration(AUTH_CONFIG);
+        osi2.showConfiguration();
+        osi2.run();
+
+        /*
 
 
 
