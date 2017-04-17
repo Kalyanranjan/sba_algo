@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <string>
 
-/* Unix commands headers*/
+/* Unix FileSystem commands headers*/
 // #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -19,7 +19,7 @@
 #define ENROLLFILENAME_LOC "./.numOfImage/enrollFileName.txt"
 #define AUTHFILENAME_LOC "./.numOfImage/authFileNames.txt"
 #define UPLOAD_LOC "./UPLOAD/"
-#define USERLIST_LOC "./SERVER/USERS.LIST"
+#define USERLIST_LOC "./SERVER/userlist/USERS.LIST"
 
 #define ENROLLMENT 1
 #define AUTHENTICATION 2
@@ -36,21 +36,35 @@ int main(int argc, char const *argv[]) {
       int choice;
       cin >> choice;
 
-      fstream ulfile(USERLIST_LOC, std::ios_base::in);
-
-      string s;
-      int userid;
+      int id;
+      string uName;
+      fstream ulFile(USERLIST_LOC, std::ios_base::in); //File for list of users in SERVER
+      OsiManager osi;
 
       if (choice == ENROLLMENT) { //Enrollment
         cout << "You have chosen to enroll\n";
 
+        cout << "\nFollowing user-ids are already taken\n";
+        while (ulFile >> id) {
+            cout << id << " ";
+            ulFile >> uName;
+        }
+        ulFile.close();
+        cout << "\n";
+
         /*Collect User Info */
-        int id;
-        string lastName;
         cout << "\nEnter your userid (numbers only): ";
         cin >> id;
-        cout << "Enter your LastName: ";
-        cin >> lastName;
+        cout << "\nNOW GO AND UPLOAD AN IMAGE WITH THE SAME FILE NAME AS THIS ID!!! ";
+        cout << "\nThen press any key followed by ENTER to continue";
+        cin >> uName; //Wait for Arbitrary input
+        cout << "Enter your Name followed by underscore and L or R (Alex_R): ";
+        cin >> uName;
+        cout << id;
+        /*Save to USERLIST in SERVER*/
+        fstream ulFile(USERLIST_LOC, std::fstream::app);
+        ulFile << id << " " << uName << endl;
+        ulFile.close();
 
         /*Read Image file name and put to enrollFileName list*/
         DIR *dpdf;
@@ -75,25 +89,70 @@ int main(int argc, char const *argv[]) {
         }
 
         /* Run OSIRIS algorithm with configuration */
-        OsiManager osi;
         osi.loadConfiguration(ENROLLMENT_CONFIG) ;
-        // osi.showConfiguration();
         osi.run();
 
 
 
       } else if (choice == AUTHENTICATION) {
         cout << "You have chosen to authenticate\n";
+
+        /*Display Users%*/
+        cout << "\nWhich User are you?\n";
+        while (ulFile >> id) {
+          ulFile >> uName;
+          cout << id << " " << uName << endl;
+        }
+        ulFile.close();
+
+        /*Ask user for identity*/
+        cout << "\nEnter your userid (number only): ";
+        cin >> id;
+        cout << "\nNOW GO AND UPLOAD AN IMAGE WITH THE SAME FILE NAME AS THIS ID!!! ";
+        cout << "\nThen press any key followed by ENTER to continue";
+        cin >> uName; //Wait for Arbitrary input
+
+        /*Generate template of authenticating image*/
+        osi.loadConfiguration(PREAUTHENROLL_CONFIG) ;
+        osi.run();
+
+        /* Copy Original Template to the Sandbox*/
+        std::ifstream  src("./SERVER/"+to_string(id)+"_code.bmp", std::ios::binary);
+        std::ofstream  dst("./.SANDBOX/"+to_string(id)+"_code.bmp",   std::ios::binary);
+        dst << src.rdbuf();
+        src.close();
+        dst.close();
+        std::ifstream src2("./SERVER/"+to_string(id)+"_mano.bmp", std::ios::binary);
+        std::ofstream dst2("./.SANDBOX/"+to_string(id)+"_mano.bmp",   std::ios::binary);
+        dst2 << src2.rdbuf();
+        src2.close();
+        dst2.close();
+
+        /*Make a list for Authenticating images*/
+        std::ofstream afnFile(AUTHFILENAME_LOC);
+        afnFile << to_string(id)+".jpg\n"+to_string(id)+"i.jpg";
+        afnFile.close();
+
+        osi.loadConfiguration(AUTH_CONFIG);
+        osi.run();
+
+
+
+
+
+
+
+
       }
 
       //
       // int a;
       // string b;
       //
-      // while (ulfile >> a)
+      // while (ulFile >> a)
       // {
       //     cout << a;
-      //     ulfile >> b;
+      //     ulFile >> b;
       //     // cout << b;
       // }
 
