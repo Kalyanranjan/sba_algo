@@ -13,11 +13,13 @@
 #include "./OsiManager.h"
 #include "./OsiStringUtils.h"
 
-#define ENROLLMENT_CONFIG "./config/EnrollmentConfig.ini"
-#define AUTH_CONFIG "./config/AuthConfig.ini"
-#define ENROLLAUTH_CONFIG "./config/TemplateAndMatchConfig.ini"
-#define ENROLLFILENAME_LOC "./numOfImage/enrollFileName.txt"
-#define AUTHFILENAME_LOC "./numOfImage/authFileNames.txt"
+#define ENROLLMENT_CONFIG "./.config/EnrollmentConfig.ini"
+#define AUTH_CONFIG "./.config/AuthConfig.ini"
+#define PREAUTHENROLL_CONFIG "./.config/PreAuthEnrollmentConfig.ini"
+#define ENROLLFILENAME_LOC "./.numOfImage/enrollFileName.txt"
+#define AUTHFILENAME_LOC "./.numOfImage/authFileNames.txt"
+#define UPLOAD_LOC "./UPLOAD/"
+#define USERLIST_LOC "./SERVER/USERS.LIST"
 
 #define ENROLLMENT 1
 #define AUTHENTICATION 2
@@ -34,7 +36,7 @@ int main(int argc, char const *argv[]) {
       int choice;
       cin >> choice;
 
-      fstream ulfile("./SERVER/USERS.LIST", std::ios_base::in);
+      fstream ulfile(USERLIST_LOC, std::ios_base::in);
 
       string s;
       int userid;
@@ -54,7 +56,7 @@ int main(int argc, char const *argv[]) {
         DIR *dpdf;
         struct dirent *epdf;
         bool imageFound = false;
-        dpdf = opendir("./CURRENT");
+        dpdf = opendir(UPLOAD_LOC);
         if (dpdf != NULL){
            while (epdf = readdir(dpdf)){
               if (strlen(epdf->d_name) > 2) {
