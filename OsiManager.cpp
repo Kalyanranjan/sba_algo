@@ -61,7 +61,7 @@ namespace osiris
         mMapString["Suffix for iris codes"] = &mSuffixIrisCodes ;
 
         // Initialize all parameters
-        initConfiguration() ;        
+        initConfiguration() ;
     }
 
 
@@ -76,7 +76,7 @@ namespace osiris
         {
             cvReleaseMat(&mpApplicationPoints) ;
         }
-        
+
         // Release matrix for Gabor filters
         for ( int f = 0 ; f < mGaborFilters.size() ; f++ )
         {
@@ -159,7 +159,7 @@ namespace osiris
     {
         // Open the file
         ifstream file(rFilename.c_str(),ifstream::in) ;
-        
+
         if ( ! file.good() )
             throw runtime_error("Cannot read configuration file " + rFilename ) ;
 
@@ -214,7 +214,7 @@ namespace osiris
             }
         }
 
-        
+
         // Load the list containing all images
         loadListOfImages() ;
 
@@ -239,7 +239,7 @@ namespace osiris
         cout << "=============" << endl ;
         cout << "Configuration" << endl ;
         cout << "=============" << endl ;
-        
+
         cout << endl ;
 
         cout << "- Process : " ;
@@ -266,7 +266,7 @@ namespace osiris
         cout << endl ;
 
         cout << "- List of images " << mFilenameListOfImages << " contains " << mListOfImages.size() << " images" << endl ;
-        
+
         cout << endl ;
 
         if ( mInputDirOriginalImages != "" )
@@ -337,7 +337,7 @@ namespace osiris
         {
             cout << "- Size of normalized iris is " << mWidthOfNormalizedIris << " x " << mHeightOfNormalizedIris << endl ;
         }
-        
+
         cout << endl ;
 
         if ( mProcessEncoding && mGaborFilters.size() )
@@ -368,7 +368,7 @@ namespace osiris
         {
             throw runtime_error("Cannot load Gabor filters in file " + mFilenameGaborFilters) ;
         }
-        
+
         // Get the number of filters
         int n_filters ;
         file >> n_filters ;
@@ -379,14 +379,14 @@ namespace osiris
 
         // Loop on each filter
         for ( int f = 0 ; f < n_filters ; f++ )
-        {    
+        {
             // Get the size of the filter
             file >> rows ;
             file >> cols ;
 
             // Temporary filter. Will be destroyed at the end of loop
-            mGaborFilters[f] = cvCreateMat(rows,cols,CV_32FC1) ;            
-            
+            mGaborFilters[f] = cvCreateMat(rows,cols,CV_32FC1) ;
+
             // Set the value at coordinates r,c
             for ( int r = 0 ; r < rows ; r++ )
             {
@@ -397,7 +397,7 @@ namespace osiris
             }
 
         } // Loop on each filter
-        
+
         // Close the file
         file.close() ;
 
@@ -416,7 +416,7 @@ namespace osiris
         {
             throw runtime_error("Cannot load the application points in " + mFilenameApplicationPoints) ;
         }
-        
+
         // Get the number of points
         int n_points = 0 ;
         file >> n_points ;
@@ -425,17 +425,17 @@ namespace osiris
         mpApplicationPoints = cvCreateMat(mHeightOfNormalizedIris,mWidthOfNormalizedIris,CV_8UC1) ;
 
         // Initialize all pixels to "off"
-        cvSet(mpApplicationPoints,cvScalar(0)) ;        
+        cvSet(mpApplicationPoints,cvScalar(0)) ;
 
         // Local variables
         int i , j ;
 
         // Loop on each point
         for ( int p = 0 ; p < n_points ; p++ )
-        {    
+        {
             // Get the coordinates
             file >> i ; file >> j ;
-            
+
             // Set pixel to "on"
             if ( i < 0 || i > mpApplicationPoints->rows-1 || j < 0 || j > mpApplicationPoints->cols-1 )
             {
@@ -502,7 +502,7 @@ namespace osiris
         {
             if ( mInputDirOriginalImages != "" )
             {
-                rEye.loadOriginalImage(mInputDirOriginalImages+rFileName) ;                
+                rEye.loadOriginalImage(mInputDirOriginalImages+rFileName) ;
             }
             else
             {
@@ -571,7 +571,7 @@ namespace osiris
         if ( mInputDirNormalizedMasks != "" )
         {
             rEye.loadNormalizedMask(mInputDirNormalizedMasks+short_name+mSuffixNormalizedMasks) ;
-        }        
+        }
 
 
 
@@ -634,7 +634,7 @@ namespace osiris
             {
                 rEye.saveNormalizedImage(mOutputDirNormalizedImages+short_name+mSuffixNormalizedImages) ;
             }
-            
+
         }
 
         // Save normalized mask
@@ -647,7 +647,7 @@ namespace osiris
             else
             {
                 rEye.saveNormalizedMask(mOutputDirNormalizedMasks+short_name+mSuffixNormalizedMasks) ;
-            }            
+            }
         }
 
         // Save iris code
@@ -659,8 +659,8 @@ namespace osiris
             }
             else
             {
-                rEye.saveIrisCode(mOutputDirIrisCodes+short_name+mSuffixIrisCodes) ;                
-            }    
+                rEye.saveIrisCode(mOutputDirIrisCodes+short_name+mSuffixIrisCodes) ;
+            }
         }
 
     } // end of function
@@ -687,7 +687,7 @@ namespace osiris
         ofstream result_matching ;
         if ( mProcessMatching && mOutputFileMatchingScores != "" )
         {
-            try 
+            try
             {
                 result_matching.open(mOutputFileMatchingScores.c_str(),ios::out) ;
             }
@@ -707,7 +707,7 @@ namespace osiris
             {
                 // Process the eye
                 OsiEye eye ;
-                processOneEye(mListOfImages[i],eye) ;            
+                processOneEye(mListOfImages[i],eye) ;
 
                 // Process a second eye if matching is requested
                 if ( mProcessMatching && (i<mListOfImages.size()-1) )
@@ -722,7 +722,7 @@ namespace osiris
 
                     // Save in file
                     if ( result_matching )
-                    {                    
+                    {
                         try
                         {
                             result_matching << mListOfImages[i-1] << " " ;
@@ -740,7 +740,7 @@ namespace osiris
 
             catch ( exception & e )
             {
-                cout << e.what() << endl ;                
+                cout << e.what() << endl ;
             }
 
         } // end for images
@@ -760,5 +760,3 @@ namespace osiris
     } // end of function
 
 } // end of namespace
-
-

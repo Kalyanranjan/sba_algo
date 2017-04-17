@@ -45,7 +45,7 @@ namespace osiris
         * @return void
         * @see showConfiguration()
         */
-        void loadConfiguration ( const std::string & rFilename = "configuration.ini" ) ;
+        void loadConfiguration ( const std::string & rFilename ) ;
 
         /** Show configuration in prompt command.
         * @see initConfiguration()
@@ -130,7 +130,7 @@ namespace osiris
         * - Application points matrix is blank
         * - All commands of processing are set to false => nothing is going to be executed
         * - Suffix for filenames are ""_segm.bmp", "_para.txt", "_mask.bmp", "_imno.bmp",
-        * "_mano.bmp", and "_code.bmp" respectively for segmented image, parameters, mask, 
+        * "_mano.bmp", and "_code.bmp" respectively for segmented image, parameters, mask,
         * normalized image, normalized mask, iris code
         * @see loadConfiguration()
         * @see showConfiguration()
@@ -162,7 +162,7 @@ namespace osiris
         */
         void loadApplicationPoints ( ) ;
 
-        /** Load, segment, normalize, encode, and save according to user configuration.        
+        /** Load, segment, normalize, encode, and save according to user configuration.
         * @param rName The eye name (used to name the loading/saving files)
         * @param rEye The eye to be processed
         * @return void
@@ -177,4 +177,3 @@ namespace osiris
 
 
 #endif
-
