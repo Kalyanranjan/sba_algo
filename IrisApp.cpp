@@ -16,6 +16,11 @@
 #define ENROLLMENT_CONFIG "./config/EnrollmentConfig.ini"
 #define AUTH_CONFIG "./config/AuthConfig.ini"
 #define ENROLLAUTH_CONFIG "./config/TemplateAndMatchConfig.ini"
+#define ENROLLFILENAME_LOC "./numOfImage/enrollFileName.txt"
+#define AUTHFILENAME_LOC "./numOfImage/authFileNames.txt"
+
+#define ENROLLMENT 1
+#define AUTHENTICATION 2
 
 using namespace std;
 using namespace osiris;
@@ -23,17 +28,62 @@ using namespace osiris;
 int main(int argc, char const *argv[]) {
   try
   {
-      // cout << "Welcome to Iris Authentication App\n";
-      // cout << "Press 1 for enrollment and 2 for authentication.  => ";
-      //
-      // int choice;
-      // cin >> choice;
-      //
-      // fstream ulfile("./SERVER/USERS.LIST", std::ios_base::in);
-      //
-      // string s;
-      // int userid;
-      //
+      cout << "Welcome to Iris Authentication App\n";
+      cout << "Press 1 for enrollment and 2 for authentication.  => ";
+
+      int choice;
+      cin >> choice;
+
+      fstream ulfile("./SERVER/USERS.LIST", std::ios_base::in);
+
+      string s;
+      int userid;
+
+      if (choice == ENROLLMENT) { //Enrollment
+        cout << "You have chosen to enroll\n";
+
+        /*Collect User Info */
+        int id;
+        string lastName;
+        cout << "\nEnter your userid (numbers only): ";
+        cin >> id;
+        cout << "Enter your LastName: ";
+        cin >> lastName;
+
+        /*Read Image file name and put to enrollFileName list*/
+        DIR *dpdf;
+        struct dirent *epdf;
+        bool imageFound = false;
+        dpdf = opendir("./CURRENT");
+        if (dpdf != NULL){
+           while (epdf = readdir(dpdf)){
+              if (strlen(epdf->d_name) > 2) {
+                ofstream efnFile;
+                efnFile.open(ENROLLFILENAME_LOC);
+                efnFile << epdf->d_name;
+                efnFile.close();
+                imageFound = true;
+                break;
+              }
+           }
+        }
+        if (!imageFound) {
+          cout << "No Image found for enrollment. Exiting...\n";
+          return 0;
+        }
+
+        /* Run OSIRIS algorithm with configuration */
+        OsiManager osi;
+        osi.loadConfiguration(ENROLLMENT_CONFIG) ;
+        // osi.showConfiguration();
+        osi.run();
+
+
+
+      } else if (choice == AUTHENTICATION) {
+        cout << "You have chosen to authenticate\n";
+      }
+
       //
       // int a;
       // string b;
@@ -83,25 +133,32 @@ int main(int argc, char const *argv[]) {
 
 
       /*Read Image file name and put to enrollFileName list*/
-      DIR *dpdf;
-      struct dirent *epdf;
-
-      dpdf = opendir("./CURRENT");
-      if (dpdf != NULL){
-         while (epdf = readdir(dpdf)){
-            if (strlen(epdf->d_name) > 2) {
-              ofstream efnFile;
-              efnFile.open("./numOfImage/enrollFileName.txt");
-              efnFile << epdf->d_name;
-              efnFile.close();
-              break;
-            }
-         }
-      }
-
+      // DIR *dpdf;
+      // struct dirent *epdf;
+      //
+      // bool imageFound = false;
+      //
+      // dpdf = opendir("./CURRENT");
+      // if (dpdf != NULL){
+      //    while (epdf = readdir(dpdf)){
+      //       if (strlen(epdf->d_name) > 2) {
+      //         ofstream efnFile;
+      //         efnFile.open(ENROLLFILENAME_LOC);
+      //         efnFile << epdf->d_name;
+      //         efnFile.close();
+      //         imageFound = true;
+      //         break;
+      //       }
+      //    }
+      // }
+      //
+      // if (!imageFound) {
+      //   cout << "No Image found for enrollment. Exiting...\n";
+      //   return 0;
+      // }
       // OsiManager osi;
-      // osi.loadConfiguration(ENROLLAUTH_CONFIG) ;
-      // osi.showConfiguration();
+      // osi.loadConfiguration(ENROLLMENT_CONFIG) ;
+      // // osi.showConfiguration();
       // osi.run();
 
   }
