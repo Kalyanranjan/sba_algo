@@ -1,0 +1,5 @@
+ENROLLMENT:
+1. User says ENROLLMENT
+  - Pass that to SBASession(enrollment=1)
+2. SBASession reads the user files and gives out user ids already taken
+3. Take in UserId, set enrollment to 1
